@@ -2,7 +2,7 @@ name: build image
 
 on:
   push:
-    branches: [main]
+    branches: [main, adaptation]
   workflow_dispatch:          # кнопка ручного запуска во вкладке Actions
 
 jobs:
