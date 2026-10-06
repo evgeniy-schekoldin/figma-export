@@ -4,5 +4,10 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 .auth/
+.chrome-profile/
 .env*
 /files.json
+
+downloads/
+*.patch
+.DS_Store

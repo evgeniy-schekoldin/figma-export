@@ -1,4 +1,4 @@
-import { test } from "@playwright/test";
+import { test } from "./fixtures";
 import fs from "node:fs";
 import dotenv from "dotenv";
 
@@ -53,7 +53,22 @@ for (const project of projectsToDownload) {
   test.describe(`project: ${projectName} (${project.id})`, () => {
     for (const file of project.files) {
       test(`file: ${file.name} (${file.key})`, async ({ page }) => {
-        await page.goto(`https://www.figma.com/design/${file.key}/`);
+        // Иногда макет зависает на заставке (логотип на сером фоне) или не
+        // открывается совсем (net::ERR_TIMED_OUT) — тогда открываем заново.
+        const url = `https://www.figma.com/design/${file.key}/`;
+        for (let attempt = 1; attempt <= 3; attempt++) {
+          try {
+            await page.goto(url, { timeout: 60 * 1000 });
+            await page
+              .locator("[data-tooltip='main-menu']")
+              .waitFor({ state: "visible", timeout: 60 * 1000 });
+            break;
+          } catch (error) {
+            if (attempt === 3) throw error;
+            console.log(`Макет не загрузился (попытка ${attempt}), открываю заново: ${file.name}`);
+            await page.waitForTimeout(10 * 1000);
+          }
+        }
 
         // Dismiss "Need to use the desktop app or installed fonts?" dialog if it appears
         await page.getByRole("button", { name: "Close" }).click({ timeout: 5000 }).catch(() => {});

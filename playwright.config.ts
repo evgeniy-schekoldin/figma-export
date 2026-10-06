@@ -1,4 +1,4 @@
-import { defineConfig, devices } from "@playwright/test";
+import { defineConfig } from "@playwright/test";
 import dotenv from "dotenv";
 import fs from "node:fs";
 
@@ -50,7 +50,7 @@ export default defineConfig({
   fullyParallel: false,
   retries: 0,
   workers: 1,
-  timeout: (Number(process.env.WAIT_TIMEOUT) || 0) + 120 * 1000,
+  timeout: (Number(process.env.WAIT_TIMEOUT) || 0) + 600 * 1000,
   reporter: [["list"], ["html", { open: "never" }]],
   use: {
     trace: "on-first-retry",
@@ -62,16 +62,6 @@ export default defineConfig({
     },
     {
       name: "download",
-      use: {
-        ...devices["Desktop Chrome"],
-        storageState: ".auth/user.json",
-        launchOptions: {
-          args: [
-            "--disable-features=DownloadRestrictions,ExternalProtocolDialog,PrivateNetworkAccessPermissionPrompt",
-            "--disable-features=PrivateNetworkAccessSendPreflights",
-          ],
-        },
-      },
       dependencies: ["setup"],
     },
   ],
