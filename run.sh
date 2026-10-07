@@ -15,12 +15,9 @@ while true; do
     if [ -s "${SYNCED_UNTIL}" ]; then
       SINCE=$(cat "${SYNCED_UNTIL}")
       npm run get-team-files -- "${FIGMA_TEAM_ID}" -last-modified-after "${SINCE}"
-
-    elif ! grep -q '"key"' "${LIST}" 2>/dev/null; then
+    else
       # Первый запуск
       npm run get-team-files -- "${FIGMA_TEAM_ID}"
-
-
     fi
 
   fi
