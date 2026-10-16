@@ -39,9 +39,14 @@ setup("authenticate", async ({ page }) => {
     await page.getByRole("button", { name: "log in" }).click();
   }
 
-  await expect(page.getByTestId("ProfileButton")).toBeAttached({
+  try {
+    await expect(page.getByTestId("ProfileButton")).toBeAttached({
     timeout: 10 * 1000,
-  });
+    });
+  } catch (error) {
+    await page.screenshot({ path: "./test-results/auth-failed-screenshot.png", fullPage: true });
+    throw error;
+  }
 
   await page.context().storageState({ path: authFile });
 });
