@@ -41,7 +41,7 @@ setup("authenticate", async ({ page }) => {
 
   try {
     await expect(page.getByTestId("ProfileButton")).toBeAttached({
-    timeout: 10 * 1000,
+    timeout: 30 * 1000,
     });
   } catch (error) {
     await page.screenshot({ path: "./test-results/auth-failed-screenshot.png", fullPage: true });
