@@ -15,6 +15,7 @@ if (limitIdx !== -1 && process.argv[limitIdx + 1]) {
 }
 
 const isForce = process.env.FORCE === "true";
+const LOAD_TIMEOUT = Number(process.env.LOAD_TIMEOUT) || 3 * 60 * 1000;
 
 const projectsToDownload = [];
 let scheduledCount = 0;
@@ -58,10 +59,10 @@ for (const project of projectsToDownload) {
         const url = `https://www.figma.com/design/${file.key}/`;
         for (let attempt = 1; attempt <= 3; attempt++) {
           try {
-            await page.goto(url, { timeout: 60 * 1000 });
+            await page.goto(url, { timeout: LOAD_TIMEOUT });
             await page
               .locator("[data-tooltip='main-menu']")
-              .waitFor({ state: "visible", timeout: 60 * 1000 });
+              .waitFor({ state: "visible", timeout: LOAD_TIMEOUT });
             break;
           } catch (error) {
             if (attempt === 3) throw error;
