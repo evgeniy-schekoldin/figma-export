@@ -50,7 +50,7 @@ export default defineConfig({
   fullyParallel: false,
   retries: 0,
   workers: 1,
-  timeout: (Number(process.env.WAIT_TIMEOUT) || 0) + 900 * 1000,
+  timeout: Number(process.env.SINGLE_TEST_TIMEOUT) || 30 * 60 * 1000,
   reporter: [["list"], ["html", { open: "never" }]],
   use: {
     trace: "on-first-retry",

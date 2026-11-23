@@ -52,10 +52,18 @@ for (const project of projectsToDownload) {
   const teamId = project.team_id || null;
 
   test.describe(`project: ${projectName} (${project.id})`, () => {
+    test.afterEach(async ({ page }, testInfo) => {
+      if (testInfo.status !== testInfo.expectedStatus) {
+        await page.screenshot({
+      	  path: testInfo.outputPath(`${testInfo.title}-error.png`),
+      	  fullPage: true,
+        }).catch(() => {});
+      }
+    });
+	
     for (const file of project.files) {
       test(`file: ${file.name} (${file.key})`, async ({ page }) => {
-        // Иногда макет зависает на заставке (логотип на сером фоне) или не
-        // открывается совсем (net::ERR_TIMED_OUT) — тогда открываем заново.
+        
         const url = `https://www.figma.com/design/${file.key}/`;
         for (let attempt = 1; attempt <= 3; attempt++) {
           try {
@@ -66,7 +74,7 @@ for (const project of projectsToDownload) {
             break;
           } catch (error) {
             if (attempt === 3) throw error;
-            console.log(`Макет не загрузился (попытка ${attempt}), открываю заново: ${file.name}`);
+            console.log(".".repeat(attempt));
             await page.waitForTimeout(10 * 1000);
           }
         }
