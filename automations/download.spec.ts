@@ -1,6 +1,7 @@
 import { test } from "./fixtures";
 import fs from "node:fs";
 import dotenv from "dotenv";
+import path from 'path';
 
 dotenv.config();
 
@@ -54,9 +55,10 @@ for (const project of projectsToDownload) {
   test.describe(`project: ${projectName} (${project.id})`, () => {
     test.afterEach(async ({ page }, testInfo) => {
       if (testInfo.status !== testInfo.expectedStatus) {
+	const safeTitle = testInfo.title.replace(/[^a-zA-Z0-9а-яА-ЯёЁ_-]/g, '_');
         await page.screenshot({
-      	  path: testInfo.outputPath(`${testInfo.title}-error.png`),
-      	  fullPage: true,
+      	  path: path.join(process.cwd(), 'screenshots', `${safeTitle}-error.png`),
+          fullPage: true,
         }).catch(() => {});
       }
     });
